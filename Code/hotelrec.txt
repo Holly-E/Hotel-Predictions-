@@ -1,0 +1,42 @@
+
+
+
+
+train = pd.read_hdf('train.h5', stop = 1000000) # Size 37,670,293 x 42
+for ind, row in feature_selection_df.iterrows():
+    if row['Total']>= 2:
+        feats.append(row['Feature'])
+
+scaler = MinMaxScaler()
+train.columns = train.columns.astype(str)
+train_rel = train[feats]
+
+X_norm = scaler.fit_transform(train_rel)
+xTrain, xTest, yTrain, yTest = train_test_split(X_norm, train['hotel_cluster'], test_size = 0.2, random_state = 0)
+
+
+knn = KNeighborsClassifier()
+knn_gs = GridSearchCV(knn, params_knn, cv=3, verbose = 2, n_jobs = -1)
+{'n_neighbors': 1}
+
+rf = RandomForestClassifier(n_jobs = -1,)
+params_rf = {'n_estimators': [100],
+             'max_depth': [5, 10],
+             }
+{'max_depth': 10, 'n_estimators': 100}
+
+log_reg = LogisticRegression(n_jobs = -1)
+params_log = {'penalty': ['l1', 'l2'],
+              'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+             }
+{'C': 10, 'penalty': 'l1'}
+
+mlp = MLPClassifier()
+params_log = {'hidden_layer_sizes': [(14,14,14), (7,7,7)]
+{'hidden_layer_sizes': (14, 14, 14)}
+
+knn: 0.143605359317905
+rf: 0.13647990255785628
+log_reg: 0.07362971985383679
+mlp: 0.07362971985383679
+stacking: .12
